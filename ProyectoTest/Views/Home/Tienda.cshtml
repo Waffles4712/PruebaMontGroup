@@ -9,9 +9,9 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Tienda</title>
-    @Styles.Render("~/Content/css")
+    @*@Styles.Render("~/Content/css")
     @Styles.Render("~/Content/PluginsCSS")
-    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/modernizr")*@
 </head>
 <body>
 
@@ -47,6 +47,7 @@
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
         <a class="navbar-brand ps-3" href="#" style="width:180px !important">Carrito Compras</a>
+        
         <!-- Sidebar Toggle-->
         <button class="btn btn-dark text-white btn-categoria" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i> Ver Categorias</button>
 
@@ -58,6 +59,7 @@
                 <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
             </button>
         </form>
+
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
@@ -84,9 +86,9 @@
         </div>
     </section>
 
-    @Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/Content/PluginsJS")
+    @Scripts.Render("~/Content/PluginsJS")*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     <script>
         $(".btn-categoria").click(function () {
