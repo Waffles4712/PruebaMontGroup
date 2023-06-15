@@ -1,0 +1,25 @@
+Imports MySql.Data.MySqlClient
+Module Module_conection
+
+    Public con As MySqlConnection
+    Public query As String
+    Public cmd As MySqlCommand
+    Public da As MySqlDataAdapter
+    Public dt As DataTable
+    Public dr As MySqlDataReader
+    Public i As Integer
+
+    Sub connection()
+        Try
+            con = New MySqlConnection("Server=localhost;Database=test;Uid=root;Pwd=")
+            If con.State = ConnectionState.Closed Then
+                con.Open()
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+        End Try
+    End Sub
+
+End Module

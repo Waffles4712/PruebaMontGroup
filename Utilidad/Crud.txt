@@ -1,0 +1,199 @@
+Imports MySql.Data.MySqlClient
+Public Class Form1
+    Dim conn As New MySqlConnection("server = localhost; port=3306; username=root;password=;database=test")
+    Dim i As Integer
+    Dim dr As MySqlDataReader
+
+
+
+
+    Sub combobox()
+        Dim da As New MySqlDataAdapter("SELECT `id`, `groupname` FROM groups", conn)
+        Dim dt As New DataTable()
+
+        da.Fill(dt)
+        cmb_productgroup.DataSource = dt
+
+        cmb_productgroup.ValueMember = "Id"
+        cmb_productgroup.DisplayMember = "groupname"
+
+    End Sub
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+
+        combobox()
+
+        DGV_load()
+
+
+    End Sub
+
+    Public Sub DGV_load()
+
+        DataGridView1.Rows.Clear()
+        Try
+            conn.Open()
+            Dim cmd As New MySqlCommand("sadfasd", conn)
+            dr = cmd.ExecuteReader
+            While dr.Read
+                DataGridView1.Rows.Add(dr.Item(""))
+            End While
+
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+    Private Sub btn_save_Click(sender As Object, e As EventArgs) Handles btn_save.Click
+        save()
+        DGV_load()
+
+    End Sub
+    Public Sub save()
+        Try
+            conn.Open()
+            Dim cmd As New MySqlCommand("INSERT INTO `crud_product`( `productno`, `productname`, `price`, `group`, `expdate`, `status`) VALUES (
+@productno,@productname,@price,@group,@expdate,@status)", conn)
+            cmd.Parameters.Clear()
+            cmd.Parameters.AddWithValue("@productno", txt_productnumber.Text)
+            cmd.Parameters.AddWithValue("@productname", txt_productname.Text)
+            cmd.Parameters.AddWithValue("@price", CDec(txt_productprice.Text))
+            cmd.Parameters.AddWithValue("@group", cmb_productgroup.Text)
+            cmd.Parameters.AddWithValue("@expdate", CDate(exp_date.Value))
+            cmd.Parameters.AddWithValue("@status", CBool(chckbx_status.Checked.ToString))
+
+            i = cmd.ExecuteNonQuery
+            If i > 0 Then
+                MessageBox.Show("Record Save Success !", "Crud", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Else
+                MessageBox.Show("Record save Failed !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+
+
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        Finally
+            conn.Close()
+        End Try
+        Clear()
+
+    End Sub
+    Public Sub Clear()
+        txt_productname.Clear()
+        txt_productnumber.Clear()
+        txt_productprice.Clear()
+        cmb_productgroup.Text = ""
+        exp_date.Value = Now
+        chckbx_status.CheckState = False
+
+        txt_productnumber.ReadOnly = False
+        btn_save.Enabled = True
+
+
+    End Sub
+
+    Private Sub DataGridView1_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellClick
+        txt_productnumber.Text = DataGridView1.CurrentRow.Cells(0).Value
+        txt_productname.Text = DataGridView1.CurrentRow.Cells(1).Value
+        txt_productprice.Text = DataGridView1.CurrentRow.Cells(2).Value
+        cmb_productgroup.Text = DataGridView1.CurrentRow.Cells(3).Value
+        exp_date.Text = DataGridView1.CurrentRow.Cells(4).Value
+        chckbx_status.Checked = DataGridView1.CurrentRow.Cells(5).Value
+
+
+        txt_productnumber.ReadOnly = True
+        btn_save.Enabled = False
+    End Sub
+    Sub edit()
+        Try
+            conn.Open()
+            Dim cmd As New MySqlCommand("UPDATE `crud_product` SET `productname`=@productname,`price`=@price,`group`=@group,`expdate`=@expdate,`status`=@status WHERE `productno`=@productno", conn)
+            cmd.Parameters.Clear()
+            cmd.Parameters.AddWithValue("@productno", txt_productnumber.Text)
+            cmd.Parameters.AddWithValue("@productname", txt_productname.Text)
+            cmd.Parameters.AddWithValue("@price", CDec(txt_productprice.Text))
+            cmd.Parameters.AddWithValue("@group", cmb_productgroup.Text)
+            cmd.Parameters.AddWithValue("@expdate", CDate(exp_date.Value))
+            cmd.Parameters.AddWithValue("@status", CBool(chckbx_status.Checked.ToString))
+
+            i = cmd.ExecuteNonQuery
+            If i > 0 Then
+                MessageBox.Show("Record Update Success !", "Crud", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Else
+                MessageBox.Show("Record Update Failed !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+
+
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        Finally
+            conn.Close()
+        End Try
+        Clear()
+        DGV_load()
+    End Sub
+    Public Sub delete()
+        If MsgBox("Are you sure delete this record?", MsgBoxStyle.Question + vbYesNo) = vbYes Then
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand("DELETE FROM  `crud_product`  WHERE `productno`=@productno", conn)
+                cmd.Parameters.Clear()
+                cmd.Parameters.AddWithValue("@productno", txt_productnumber.Text)
+
+
+                i = cmd.ExecuteNonQuery
+                If i > 0 Then
+                    MessageBox.Show("Record Update Success !", "Crud", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Else
+                    MessageBox.Show("Record Update Failed !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
+
+
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            Finally
+                conn.Close()
+            End Try
+            Clear()
+            DGV_load()
+        Else
+            Return
+
+        End If
+    End Sub
+
+    Private Sub btn_update_Click(sender As Object, e As EventArgs) Handles btn_update.Click
+        edit()
+
+
+    End Sub
+
+    Private Sub btn_clear_Click(sender As Object, e As EventArgs) Handles btn_clear.Click
+        Clear()
+
+    End Sub
+
+    Private Sub btn_delete_Click(sender As Object, e As EventArgs) Handles btn_delete.Click
+        delete()
+
+    End Sub
+
+    Private Sub txt_search_TextChanged(sender As Object, e As EventArgs) Handles txt_search.TextChanged
+        DataGridView1.Rows.Clear()
+        Try
+            conn.Open()
+            Dim cmd As New MySqlCommand("SELECT * FROM crud_product where productno like '%" & txt_search.Text & "%' or productname like '%" & txt_search.Text & "%'", conn)
+            dr = cmd.ExecuteReader
+            While dr.Read
+                DataGridView1.Rows.Add(dr.Item("productno"), dr.Item("productname"), dr.Item("price"), dr.Item("group"), dr.Item("expdate"), Format(CBool(dr.Item("status"))))
+            End While
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        Finally
+            conn.Close()
+        End Try
+        Clear()
+    End Sub
+
+
+End Class

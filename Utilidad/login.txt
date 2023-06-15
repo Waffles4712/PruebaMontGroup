@@ -1,0 +1,34 @@
+Imports MySql.Data.MySqlClient
+Public Class LOGIN
+    Private Sub LOGIN_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        connection()
+    End Sub
+
+    Private Sub LinkLabel1_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked
+        REGISTER.Show()
+        Me.Close()
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        cmd = New MySqlCommand
+        cmd.Connection = con
+        query = "SELECT* FROM login where username= '" & usernametxt.Text & "' and password='" & passwordtxt.Text & "' "
+        cmd.CommandText = query
+
+        da = New MySqlDataAdapter(query, con)
+        dt = New DataTable()
+        Try
+
+            da.Fill(dt)
+            If dt.Rows.Count <= 0 Then
+                MsgBox("Login Failed :(", vbInformation)
+            Else
+                main.Show()
+                Me.Close()
+
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+End Class

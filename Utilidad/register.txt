@@ -1,0 +1,28 @@
+Imports MySql.Data.MySqlClient
+Public Class REGISTER
+
+
+    Private Sub REGISTER_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        connection()
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        cmd = New MySqlCommand
+        cmd.Connection = con
+        query = "Insert into login values (null,'" & usernametxt.Text & "','" & passwordtxt.Text & "', '" & namecompletetxt.Text & "')"
+        cmd.CommandText = query
+
+        Try
+            cmd.ExecuteNonQuery()
+            MsgBox("Register success !!", vbInformation)
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
+    End Sub
+
+    Private Sub LinkLabel1_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked
+        LOGIN.Show()
+        Me.Close()
+    End Sub
+End Class
